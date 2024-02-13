@@ -1,0 +1,168 @@
+\documentclass{article}
+\usepackage{listings} % Paquete para incluir código fuente
+\usepackage{hyperref} % Paquete para manejar enlaces y referencias
+\usepackage{amsmath} % Paquete para símbolos matemáticos
+\usepackage{xcolor}
+\usepackage{lstmisc}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+
+\title{Descomposición en Valores Singulares para la Solución de Sistemas Sobredeterminados}
+\author{RUBEN MARTINEZ GONZALEZ}
+\date{\today}
+
+\begin{document}
+
+    \maketitle
+
+
+    \section{Introducción}\label{sec:introduccion}
+    La descomposición en valores singulares (SVD) es una técnica en álgebra lineal que se utiliza para resolver una variedad de problemas,
+    incluyendo la resolución de sistemas de ecuaciones sobredeterminados.
+    En este informe, se explica cómo se puede aplicar la SVD para resolver sistemas sobredeterminados de la forma $AX = 0$.
+
+
+    \section{Desarrollo}\label{sec:desarrollo}
+    Cuando se tiene un sistema de ecuaciones lineales de la forma AX=0, donde A es una matriz sobredeterminada
+    (es decir, con más ecuaciones que incógnitas), la SVD puede proporcionar una solución que minimiza el error cuadrático.
+    La descomposición en valores singulares de una matriz A es una factorización que puede escribirse como:
+    \begin{equation}
+        A = U \Sigma V^T\label{eq:equation}
+    \end{equation}
+    Donde:
+    \begin{itemize}
+        \item $U$ Es una matriz ortogonal de tamaño $m \times m$.
+        \item $\Sigma$ Es una matriz diagonal de tamaño $m \times n$ (donde m es el número de filas de A y n es el número de columnas)
+        con los valores singulares de A ordenados en forma decreciente en la diagonal.
+        \item $V^T$ Es la matriz traspuesta de V, donde V es una matriz ortogonal de $n \times n$.
+    \end{itemize}
+    Para resolver el sistema de ecuaciones AX=0 donde A es sobredeterminada, podemos utilizar la descomposición en valores singulares
+    para encontrar la solución que minimiza el error cuadrático.
+    La solución se obtiene tomando el vector correspondiente a la columna de V asociada al menor valor singular de A.
+
+    \noindent
+    Este enfoque se basa en el hecho de que la SVD descompone la matriz A en tres componentes que representan la rotación,
+    el cambio de escala y otra rotación.
+    Así, la matriz V (o VT) captura la dirección en la cual la matriz A produce el menor cambio posible.
+
+
+    \section{Implementación en Python}
+    A continuación, se muestra una implementación simple en Python de la descomposición en valores singulares y la resolución de sistemas sobredeterminados utilizando la SVD.
+    Nota: La implementación está desplegada en un notebook de Google Colab, el cual se puede acceder a través del siguiente enlace:
+    \texttt{%
+        \href{https://colab.research.google.com/drive/1CIy41HI3YFt20mPOnnGMbWKQPAHaVYAX?usp=sharing}{%
+            Colab}%
+    }
+
+
+
+    \begin{lstlisting}[language=Python, caption=Implementación de SVD para resolver sistemas sobredeterminados]
+import numpy as np
+
+def svd(A):
+    # Calcula A^T * A producto de la matriz transpuesta de A con A,
+    ATA = np.dot(A.T, A)
+
+    # Calcula los eigenvectors y eigenvalues de A^T * A
+    eigenvalues, eigenvectors = np.linalg.eig(ATA)
+
+    # Ordena los eigenvalues en función de los eigenvectors
+    idx = eigenvalues.argsort()[::-1]
+    eigenvalues = eigenvalues[idx]
+    eigenvectors = eigenvectors[:,idx]
+
+    # Calcula la matriz diagonal Sigma tomando la raíz cuadrada de los autovalores.
+    sigma = np.sqrt(eigenvalues)
+
+    # Calcula la matriz U dividiendo los autovectores por los elementos de Sigma
+    #y luego multiplicando el resultado por la matriz original A
+    U = np.dot(A, eigenvectors / sigma)
+
+    # Calcula la matriz V
+    V = eigenvectors
+
+    return U, sigma, V.T
+
+def solve_overdetermined_system(A):
+    # Calcula la descomposición SVD de A
+    U, sigma, VT = svd(A)
+
+    # Encuentra el vector correspondiente a la columna de VT asociada al menor valor singular
+    x = VT[-1, :]
+
+    return x
+    \end{lstlisting}
+
+    \noindent
+    El código anterior utiliza la biblioteca NumPy para calcular la descomposición en valores singulares de una matriz $A$ y encontrar la solución al sistema sobredeterminado.
+
+
+    \section{Ejemplo de Uso}
+    A continuación, se muestra un ejemplo de cómo se puede usar la implementación para resolver un sistema sobredeterminado:
+
+    \begin{lstlisting}[language=Python, caption=Ejemplo de uso de la implementación]
+# Creamos una matriz sobredeterminada A
+A = np.array([[1, 2, 3],
+              [4, 5, 6],
+              [7, 8, 9],
+              [10, 11, 12]])
+
+# Resolvemos el sistema sobredeterminado AX = 0
+solution = solve_overdetermined_system(A)
+
+print("Solución del sistema sobredeterminado AX = 0:")
+print(solution)
+
+    \end{lstlisting}
+    \begin{lstlisting}[language=Python, caption=Salida del ejemplo]
+Solución del sistema sobredeterminado AX = 0:
+[ 0.40824829 -0.81649658  0.40824829]
+    \end{lstlisting}
+
+    \noindent
+    En este ejemplo, se crea una matriz sobredeterminada $A$ y se resuelve el sistema sobredeterminado $AX = 0$ utilizando la implementación de SVD.
+
+
+    \section{Referencias}
+    Para obtener más información sobre la descomposición en valores singulares y su aplicación en la resolución de sistemas sobredeterminados,
+    se recomienda consultar las siguientes referencias:
+
+    \begin{enumerate}
+        \item  \texttt{%
+            \href{https://https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/resources/lecture-29-singular-value-decomposition/}{%
+                Video Lecture by Gilbert Strang (MIT)}%
+        }
+        \item Gilbert Strang. \textit{Introduction to Linear Algebra}.
+        \item Singular Value Decomposition (SVD).
+          \texttt{%
+            \href{https://www.cs.cmu.edu/~venkatg/teaching/CStheory-infoage/book-chapter-4.pdf}{%
+                PDF link}%
+        }
+    \end{enumerate}
+
+\end{document}

@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry} % Ajusta los márgenes a 1 pulgada
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Informe sobre Umbralización por Histéresis}
+\author{RUBEN MARTINEZ GONZALEZ}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+\noindent
+En este informe, se presenta la adaptación realizada para implementar la umbralización por histéresis.
+\noindent
+La solución se implementó en Python y está desplegada en un notebook de Google Colab, el cual se puede acceder a través del siguiente enlace:
+\texttt{%
+    \href{https://colab.research.google.com/drive/1jJnkRD_QYszGcF4tEZ0V2oYQkkZl8hcF?usp=sharing}{%
+        Colab}%
+}
+\section{Umbralización por histéresis}
+La umbralización por histéresis es una técnica utilizada en el procesamiento de imágenes para detectar bordes. Se basa en el uso de dos umbrales: uno alto y otro bajo. Los píxeles que están por encima del umbral alto se consideran como píxeles de borde fuertes, mientras que los píxeles que están por encima del umbral bajo pero por debajo del umbral alto se consideran como píxeles de borde débiles. Los píxeles por debajo del umbral bajo se descartan.
+
+\section{Adaptación del Algoritmo}
+Para adaptar el algoritmo de búsqueda en profundidad para realizar la umbralización por histéresis, realizamos las siguientes modificaciones:
+
+
+\section{Resultado}
+
+
+\end{document}
